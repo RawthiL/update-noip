@@ -41,7 +41,7 @@ def update_ip(ip_file_path, current_ip, logger):
     all_fail = True
     if current_ip != no_ip_act:
 
-        logger.info('... Updating www.noip.com account ...')
+        logger.info('... Updating www.cloudflare.com account ...')
         logger.info('... OLD IP: {ip}'.format(ip=no_ip_act))
         logger.info('... NEW IP: {ip}'.format(ip=current_ip))
 
@@ -84,10 +84,8 @@ def update_ip(ip_file_path, current_ip, logger):
             }
             response = requests.get(query_url, headers=headers, json=to_update)
 
-            # if 200 this means the page was reached
-            # r.content should be the response from noip.com
+            # Check response
             logger.debug(f"Domain: {hostname}, Status Code: {response.status_code}, Response: {response.content}")
-
             if response.status_code == 200:
                 success = 'yes'
                 all_fail = False
