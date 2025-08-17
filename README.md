@@ -1,7 +1,7 @@
-# Update your no-ip.com domain name --- Dockerized
+# Update your no-ip.com or Cloudflare domain name --- Dockerized
 
-This is an update, inspired by the original work of the author, to update the IP binded to a [NO-IP domain](www.noip.com).
-I'm not sure how muh this repo has diverted from its original impolementation, but the original author's work inspired all this.
+This is an update, inspired by the original work of the author, to update the IP binded to a [NO-IP domain](www.noip.com) and [Cloudflare](cloudflare.com/) domains (in case youown one).
+I'm not sure how much this repo has diverted from its original impolementation, but the original author's work inspired all this.
 
 NOTE: Confirming your host each moenth through API is not possible anymore. This code only focuses on updating the IP.
 
@@ -15,13 +15,18 @@ chmod +x ./build.sh
 ./build.sh
 ```
 
-### Run
 
+
+# Run
+
+
+### NO-IP.com
 To run a test simply do:
 
 ```sh
 docker run \
 	-v ./untracked:/output \
+  -e NOIP_CHECK=1, \
 	-e NOIP_HOSTNAMES=<your_list_of, comma_separated, hostnames> \
 	-e NOIP_USERNAME=<your_noip_username> \
 	-e NOIP_PASSWORD=<your_noip_password> \
@@ -31,8 +36,25 @@ docker run \
 
 this will create a `log.txt` inside a folder called `untracked` (that should exist).
 
+### Cloudflare
 
-### Crontab
+Same as before, differnt variables
+
+```sh
+docker run \
+	-v ./untracked:/output \
+  -e CLOUDFLARE_CHECK=1, \
+	-e CLOUDFLARE_HOSTNAMES=<your_list_of, comma_separated, hostnames> \
+	-e CLOUDFLARE_TOKEN=<your_cloudflare_token> \
+	-e CLOUDFLARE_ZONE_ID=<the_zonid_of_the_dns_to_edit> \
+	-e NOIP_LOGLEVEL=DEBUG \
+	-it noip_check_update:latest
+```
+
+You can also update both, no-ip and cloudflarte at the same time, just add all the env vars toguether.
+
+
+# CronJob example
 
 This is designed to work with a k8s cronjob. Here is a sample of how to create the job that runs every hour.
 Please note that this job depends on a `configmap.yaml` and a `secret.yaml` that are not provided (they only include personal data) and a `pv.yaml` that is also not provided (use what you feel like).
@@ -56,6 +78,11 @@ spec:
             image: rawthil/noip_check_update:latest
             imagePullPolicy: Always
             env:
+              - name: NOIP_CHECK
+                valueFrom:
+                  configMapKeyRef:
+                    name: noip-updater-config
+                    key: noip_check
               - name: NOIP_LOGLEVEL
                 valueFrom:
                   configMapKeyRef:
