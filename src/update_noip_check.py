@@ -62,7 +62,7 @@ def main():
 		no_ip_act = f.read()
 		f.close()
 	except Exception as e:
-		logger.warning(f"Cannot open current IP file ({str(e)}). Update forced.\n")
+		logger.warning(f"Cannot open current IP file ({str(e)}). Update forced.")
 		no_ip_act = None
 
 	# Get my current IP
@@ -83,8 +83,8 @@ def main():
 	if _new_ != no_ip_act:
 
 		logger.info('... Updating www.noip.com account ...')
-		logger.info('... OLD IP: {ip}\n'.format(ip=no_ip_act))
-		logger.info('... NEW IP: {ip}\n'.format(ip=_new_))
+		logger.info('... OLD IP: {ip}'.format(ip=no_ip_act))
+		logger.info('... NEW IP: {ip}'.format(ip=_new_))
 
 		# For each of the selected domains
 		for hostname in HOSTNAMES:
