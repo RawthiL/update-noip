@@ -82,7 +82,7 @@ def update_ip(ip_file_path, current_ip, logger):
             headers = {
                 "Authorization": f"Bearer {TOKEN}"
             }
-            response = requests.get(query_url, headers=headers, json=to_update)
+            response = requests.patch(query_url, headers=headers, json=to_update)
 
             # Check response
             logger.debug(f"Domain: {hostname}, Status Code: {response.status_code}, Response: {response.content}")
